@@ -1,5 +1,3 @@
-d can take upto 10 mins.
-
 FROM apache/airflow:2.8.0
 
 ENV AIRFLOW_HOME=/opt/airflow
