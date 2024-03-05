@@ -16,14 +16,19 @@ import pyarrow.parquet as pq
 import gzip
 import pandas as pd
 
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from pipelines.reddit_pipeline import reddit_pipeline
+
+
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 BUCKET = os.environ.get("GCP_GCS_BUCKET")
 
-sys.path.insert(__index: 0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 
 default_args ={
     'owner': 'Airflow User',
-    'start_date': datetime(year: 2024, month: 3, day: 4)
+    'start_date': datetime(year=2024, month=3, day=4),
 }
 
 file_postfix = datetime.now().strftime("%Y%m%d")
@@ -31,17 +36,18 @@ file_postfix = datetime.now().strftime("%Y%m%d")
 dag = DAG(
     dag_id='etl_reddit_pipeline',
     default_args=default_args,
-    schedul_interval='@daily',
+    schedule_interval='@daily',
     catchup=False
 )
 
 extract = PythonOperator(
-    task_id = 'reddit_extract',
+    task_id = 'reddit_extraction',
     python_callable=reddit_pipeline,
     op_kwargs = {
         'file_name': f'reddit_{file_postfix}',
         'subreddit': 'worldnews',
-        'time_filter': 'day'
+        'time_filter': 'day',
         'limit': 100
-    }
+    },
+    dag=dag
 )

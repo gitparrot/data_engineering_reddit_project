@@ -62,13 +62,21 @@ x-airflow-common:
     AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: 'google-cloud-platform://?extra__google_cloud_platform__key_path=/.google/credentials/google_credentials.json'
 
     # TODO: Please change GCP_PROJECT_ID & GCP_GCS_BUCKET, as per your config
-    GCP_PROJECT_ID: 'pivotal-surfer-336713'
-    GCP_GCS_BUCKET: 'dtc_data_lake_pivotal-surfer-336713'
+    GCP_PROJECT_ID: 'argon-tuner-410118'
+    GCP_GCS_BUCKET: 'argon-tuner-410118-reddit-project'
 
   volumes:
+    - ./config:/opt/airflow/config
     - ./dags:/opt/airflow/dags
+    - ./data:/opt/airflow/data
+    - ./etls:/opt/airflow/etls
     - ./logs:/opt/airflow/logs
+    - ./pipelines:/opt/airflow/pipelines
     - ./plugins:/opt/airflow/plugins
+    - ./tests:/opt/airflow/tests
+    - ./utils:/opt/airflow/utils
+   # - ./airflow.cfg:/opt/airflow/airflow.cfg
+    - ./requirements.txt:/opt/airflow/requirements.txt
     - ~/.google/credentials/:/.google/credentials:ro
 
   user: "${AIRFLOW_UID:-50000}:0"
