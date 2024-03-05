@@ -27,3 +27,22 @@ OUTPUT_PATH = parser.get('file_paths', 'output_path')
 BATCH_SIZE = parser.getint('etl_settings', 'batch_size')  # Use getint for integer
 LOG_LEVEL = parser.get('etl_settings', 'log_level')
 
+POST_FIELDS = (
+    'id',
+    'title',
+    'score',
+    'num_comments',
+    'author',
+    'created_utc',
+    'url',
+    'over_18',
+    'edited',
+    'spoiler',
+    'stickied',
+    'upvote_ratio',
+    'locked',
+    'removal_reason',
+    'report_reasons',
+    'removed_by',
+    'mod_reason_by'
+)
