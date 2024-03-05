@@ -1,2 +1,3 @@
 config.conf
 logs
+__pycache__
