@@ -35,10 +35,6 @@ POST_FIELDS = (
     'author',
     'created_utc',
     'url',
-    'over_18',
-    'edited',
-    'spoiler',
-    'stickied',
     'upvote_ratio',
     'locked',
     'removal_reason',
@@ -46,3 +42,6 @@ POST_FIELDS = (
     'removed_by',
     'mod_reason_by'
 )
+
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
+BUCKET = os.environ.get("GCP_GCS_BUCKET")

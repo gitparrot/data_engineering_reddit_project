@@ -23,7 +23,7 @@ def create_dataset_if_not_exists(client, dataset_id):
 
 def reddit_pipeline(file_name: str, subreddit: str, time_filter='day', limit=None):
     # Connect to reddit instance
-    instance = connect_reddit(CLIENT_ID, SECRET, 'Airscholar Agent')
+    instance = connect_reddit(CLIENT_ID, SECRET, 'Umar Agent')
     
     # Extraction
     posts = extract_posts(instance, subreddit, time_filter, limit)
@@ -36,14 +36,14 @@ def reddit_pipeline(file_name: str, subreddit: str, time_filter='day', limit=Non
     file_path = f'{OUTPUT_PATH}/{file_name}.csv'
     load_data_to_csv(post_df, file_path)
     
-    # Upload to GCS
-    object_name = f'reddit_data/{file_name}.csv'  # Adjust path as needed
-    upload_to_gcs(BUCKET, object_name, file_path)
+    # # Upload to GCS
+    # object_name = f'reddit_data/{file_name}.csv'  # Adjust path as needed
+    # upload_to_gcs(BUCKET, object_name, file_path)
 
-    # Load data to BigQuery
-    dataset_id = 'reddit_data'  # Dataset ID
-    table_id = 'worldnews_data'  # Table ID
-    load_data_to_bigquery(BUCKET, object_name, PROJECT_ID, dataset_id, table_id)
+    # # Load data to BigQuery
+    # dataset_id = 'reddit_data'  # Dataset ID
+    # table_id = 'worldnews_data'  # Table ID
+    # load_data_to_bigquery(BUCKET, object_name, PROJECT_ID, dataset_id, table_id)
 
 def upload_to_gcs(bucket_name, destination_blob_name, source_file_name):
     """Uploads a file to the bucket."""
@@ -65,6 +65,8 @@ def load_data_to_bigquery(bucket_name, source_file_name, project_id, dataset_id,
     job_config.source_format = bigquery.SourceFormat.CSV
     job_config.autodetect = True
     job_config.skip_leading_rows = 1
+    # Set write disposition to WRITE_APPEND to append data to the table
+    job_config.write_disposition = bigquery.WriteDisposition.WRITE_APPEND
 
     uri = f"gs://{bucket_name}/{source_file_name}"
     load_job = client.load_table_from_uri(uri, table_ref, job_config=job_config)
@@ -75,3 +77,30 @@ def load_data_to_bigquery(bucket_name, source_file_name, project_id, dataset_id,
 
     destination_table = client.get_table(table_ref)
     print(f"Loaded {destination_table.num_rows} rows.")
+
+def remove_duplicates(project_id, dataset_id, table_id):
+    client = bigquery.Client(project=project_id)
+    job_config = bigquery.QueryJobConfig()
+    
+    deduplication_query = f"""
+    CREATE OR REPLACE TABLE `{project_id}.{dataset_id}.{table_id}` AS
+    WITH deduped AS (
+    SELECT
+        *,
+        ROW_NUMBER() OVER (PARTITION BY id ORDER BY created_utc DESC) AS row_number
+    FROM
+        `{project_id}.{dataset_id}.{table_id}`  -- Corrected: consistent backticks
+    )
+    SELECT
+    * EXCEPT(row_number)
+    FROM
+    deduped
+    WHERE
+    row_number = 1;
+    """
+    
+    # Run the query
+    query_job = client.query(deduplication_query, job_config=job_config)
+    query_job.result()  # Wait for the query to finish
+    print(f"Deduplication complete for table {table_id}")
+
