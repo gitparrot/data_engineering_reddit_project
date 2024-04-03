@@ -37,7 +37,7 @@ file_postfix = datetime.now().strftime("%Y%m%d")
 with DAG(
     dag_id='etl_reddit_pipeline',
     default_args=default_args,
-    schedule_interval='*/2 * * * *',
+    schedule_interval='*/15 * * * *',
     catchup=False
 ) as dag:
 
@@ -47,7 +47,7 @@ with DAG(
         op_kwargs = {
             'file_name': f'reddit_{file_postfix}',
             'subreddit': 'worldnews',
-            'time_filter': 'all',
+            'time_filter': 'hour',
             'limit': 100000
         }
     )

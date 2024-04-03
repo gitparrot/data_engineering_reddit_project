@@ -56,7 +56,8 @@ def upload_to_gcs(bucket_name, destination_blob_name, source_file_name):
     print(f"File {source_file_name} uploaded to {destination_blob_name}.")
 
 def load_data_to_bigquery(bucket_name, source_file_name, project_id, dataset_id, table_id):
-    """Loads the CSV data from GCS to BigQuery, creating the dataset and table if they do not exist."""
+    """Loads the CSV data from GCS to BigQuery, creating the dataset and table if they do not exist.
+    The table is partitioned by date and clustered by author and score."""
     client = bigquery.Client(project=project_id)
     create_dataset_if_not_exists(client, dataset_id)
 
@@ -65,7 +66,6 @@ def load_data_to_bigquery(bucket_name, source_file_name, project_id, dataset_id,
     job_config.source_format = bigquery.SourceFormat.CSV
     job_config.autodetect = True
     job_config.skip_leading_rows = 1
-    # Set write disposition to WRITE_APPEND to append data to the table
     job_config.write_disposition = bigquery.WriteDisposition.WRITE_APPEND
 
     uri = f"gs://{bucket_name}/{source_file_name}"
@@ -81,23 +81,20 @@ def load_data_to_bigquery(bucket_name, source_file_name, project_id, dataset_id,
 def remove_duplicates(project_id, dataset_id, table_id):
     client = bigquery.Client(project=project_id)
     job_config = bigquery.QueryJobConfig()
-    
+
     deduplication_query = f"""
-    CREATE OR REPLACE TABLE `{project_id}.{dataset_id}.{table_id}` AS
-    WITH deduped AS (
-    SELECT
-        *,
-        ROW_NUMBER() OVER (PARTITION BY id ORDER BY created_utc DESC) AS row_number
-    FROM
-        `{project_id}.{dataset_id}.{table_id}`  -- Corrected: consistent backticks
-    )
-    SELECT
-    * EXCEPT(row_number)
-    FROM
-    deduped
-    WHERE
-    row_number = 1;
+    DELETE FROM `{project_id}.{dataset_id}.{table_id}` t1
+    WHERE EXISTS (
+        SELECT 1
+        FROM `{project_id}.{dataset_id}.{table_id}` t2
+        WHERE t1.id = t2.id
+        AND t1.created_utc < t2.created_utc
+    );
     """
+
+    query_job = client.query(deduplication_query, job_config=job_config)
+    query_job.result()  # Wait for the query to finish
+    print(f"Deduplication complete for table {table_id}")
     
     # Run the query
     query_job = client.query(deduplication_query, job_config=job_config)
