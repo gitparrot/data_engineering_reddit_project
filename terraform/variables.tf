@@ -7,7 +7,7 @@ variable "credentials" {
 variable "project" {
   description = "GCP Project ID"
   # Update the default value to your Google Cloud project ID
-  default     = <ENTER YOUR PROJECT ID>  # Replace with your actual project ID
+  default     = "<ENTER YOUR PROJECT ID>"  # Replace with your actual project ID
 }
 
 variable "region" {
@@ -31,7 +31,7 @@ variable "bq_dataset_name" {
 variable "gcs_bucket_name" {
   description = "Google Cloud Storage Bucket Name"
   # Update the below to a unique bucket name for storing CSV files and other data
-  default     = <ENTER YOUR BUCKET NAME>  # Must be globally unique
+  default     = "<ENTER YOUR BUCKET NAME>"  # Must be globally unique
 }
 
 variable "gcs_storage_class" {

@@ -62,8 +62,8 @@ x-airflow-common:
     AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: 'google-cloud-platform://?extra__google_cloud_platform__key_path=/.google/credentials/google_credentials.json'
 
     # TODO: Please change GCP_PROJECT_ID & GCP_GCS_BUCKET, as per your config
-    GCP_PROJECT_ID: 'argon-tuner-410118'
-    GCP_GCS_BUCKET: 'argon-tuner-410118-reddit-project'
+    GCP_PROJECT_ID: '<ENTER YOUR PROJECT ID>'
+    GCP_GCS_BUCKET: '<ENTER YOUR GCP BUCKET>'
 
   volumes:
     - ./config:/opt/airflow/config
