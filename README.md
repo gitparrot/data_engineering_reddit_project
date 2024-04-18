@@ -76,12 +76,16 @@ reddit-data-pipeline/
 ```bash
 git clone https://github.com/gitparrot/data_engineering_reddit_project.git
 cd reddit-data-pipeline
+```
 Place your GCP service account key JSON file in the google_creds/ directory AND NAME IT google_credentials.json (IT HAS TO BE NAMED google_credentials.json)
 Update the following variables in the terraform/variables.tf file:
+```bash
 project (line 10): Replace <ENTER YOUR PROJECT ID> with your actual GCP project ID.
 gcs_bucket_name (line 34): Replace <ENTER YOUR BUCKET NAME> with a unique name for your Google Cloud Storage bucket.
 Feel free to change the region and location if you wish.
+```
 Update the following variables in the docker-compose.yml file:
+``` bash
 GCP_PROJECT_ID (line 65): Replace <ENTER YOUR PROJECT ID> with your actual GCP project ID.
 GCP_GCS_BUCKET (line 66): Replace <ENTER YOUR GCP BUCKET> with the same bucket name you used in the terraform/variables.tf file.
 ```
