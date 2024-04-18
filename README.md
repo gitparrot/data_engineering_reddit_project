@@ -1,5 +1,17 @@
 # data_engineering_reddit_project
 
+## Dashboard
+
+Heat Map generated based on the frequency of articles containing the name of the country in the title of the post.
+Bar chart for seeing the average number of posts and the scores.
+Time series graph for seeing the activity based on UTC time.
+
+![Dashboard](./reddit_proj_dash.png "WorldNews Subreddit Dashboard")
+
+## Architecture
+
+![Architecture](./architecture.png "Pipeline Architecture")
+
 # Reddit Data Pipeline Project
 
 This project is an end-to-end data pipeline that extracts data from the Reddit API (praw), processes it, and loads it into Google BigQuery for further analysis. The pipeline is orchestrated using Apache Airflow and includes data transformation steps using dbt (Data Build Tool). I wanted to visualize the traffic and topic data coming from the r/worldnews subreddit. I wanted to see the frequency of posts categorized by countries. I was also interested in what time and day was the subreddit most active during. (UTC Time)
@@ -136,14 +148,3 @@ terraform destroy
 ```
 Confirm the destroy operation when prompted.
 
-## Dashboard
-
-Heat Map generated based on the frequency of articles containing the name of the country in the title of the post.
-Bar chart for seeing the average number of posts and the scores.
-Time series graph for seeing the activity based on UTC time.
-
-![Dashboard](./reddit_proj_dash.png "WorldNews Subreddit Dashboard")
-
-## Architecture
-
-![Architecture](./architecture.png "Pipeline Architecture")
