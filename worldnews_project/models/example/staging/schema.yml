@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: staging
+    database: argon-tuner-410118
+    schema: reddit_data
+
+    tables:
+      - name: worldnews_data

@@ -19,7 +19,7 @@ import pandas as pd
 
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from pipelines.reddit_pipeline import reddit_pipeline, upload_to_gcs, load_data_to_bigquery, create_dataset_if_not_exists, remove_duplicates
+from pipelines.pipeline import worldnews_pipeline, upload_to_gcs, load_data_to_bigquery, create_dataset_if_not_exists, remove_duplicates
 import utils.constants
 
 # PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
@@ -35,15 +35,15 @@ default_args ={
 file_postfix = datetime.now().strftime("%Y%m%d")
 
 with DAG(
-    dag_id='etl_reddit_pipeline',
+    dag_id='etl_worldnews_pipeline',
     default_args=default_args,
-    schedule_interval='*/15 * * * *',
+    schedule_interval='0 * * * *',
     catchup=False
 ) as dag:
 
     extract = PythonOperator(
         task_id = 'reddit_extraction',
-        python_callable=reddit_pipeline,
+        python_callable=worldnews_pipeline,
         op_kwargs = {
             'file_name': f'reddit_{file_postfix}',
             'subreddit': 'worldnews',
@@ -101,5 +101,13 @@ with DAG(
         print_header=True
     )
 
+    dbt_run = BashOperator(
+        task_id='dbt_run',
+        bash_command='/home/airflow/.local/bin/dbt run --full-refresh',
+        env={
+            'DBT_PROJECT_DIR': '/opt/airflow/worldnews_project/',
+            'DBT_PROFILES_DIR': '/opt/airflow/dbt',
+        },
+    )
 
-extract >> gcs_load >> bigquery_load >> delete_csv >> deduplicate_data >> export_bigquery_to_gcs
+extract >> gcs_load >> bigquery_load >> delete_csv >> deduplicate_data >> export_bigquery_to_gcs >> dbt_run

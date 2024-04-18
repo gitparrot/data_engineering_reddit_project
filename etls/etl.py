@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from utils.constants import POST_FIELDS
 
-def connect_reddit(client_id, client_secret, user_agent) -> 'praw.Reddit':
+def connect_api(client_id, client_secret, user_agent) -> 'praw.Reddit':
     try:
         reddit = praw.Reddit(client_id=client_id,
                              client_secret=client_secret,
@@ -17,7 +17,7 @@ def connect_reddit(client_id, client_secret, user_agent) -> 'praw.Reddit':
         sys.exit(1)
 
 # Update the type hint for reddit_instance to 'praw.Reddit'
-def extract_posts(reddit_instance: 'praw.Reddit', subreddit: str, time_filter: str, limit=None):
+def post_extraction(reddit_instance: 'praw.Reddit', subreddit: str, time_filter: str, limit=None):
     subreddit = reddit_instance.subreddit(subreddit)
     posts = subreddit.top(time_filter=time_filter, limit=limit)
 
@@ -32,34 +32,34 @@ def extract_posts(reddit_instance: 'praw.Reddit', subreddit: str, time_filter: s
 
     return post_lists
 
-def transform_data(post_df: pd.DataFrame):
+def data_transform(redd_post: pd.DataFrame):
     # Convert 'created_utc' to datetime
-    post_df['created_utc'] = pd.to_datetime(post_df['created_utc'], unit='s')
+    redd_post['created_utc'] = pd.to_datetime(redd_post['created_utc'], unit='s')
 
     # Convert 'author' to string
-    post_df['author'] = post_df['author'].astype(str)
+    redd_post['author'] = redd_post['author'].astype(str)
 
     # Ensure 'num_comments' and 'score' are integers
-    post_df['num_comments'] = post_df['num_comments'].astype(int)
-    post_df['score'] = post_df['score'].astype(int)
+    redd_post['num_comments'] = redd_post['num_comments'].astype(int)
+    redd_post['score'] = redd_post['score'].astype(int)
 
     # Convert 'upvote_ratio' to a ratio (integer handling might not be appropriate as it's a ratio)
-    post_df['upvote_ratio'] = post_df['upvote_ratio'].astype(float)
+    redd_post['upvote_ratio'] = redd_post['upvote_ratio'].astype(float)
 
     # Convert 'title' to string
-    post_df['title'] = post_df['title'].astype(str)
+    redd_post['title'] = redd_post['title'].astype(str)
 
     # Handle newly added fields
     # 'locked' as boolean
-    post_df['locked'] = post_df['locked'].astype(bool)
+    redd_post['locked'] = redd_post['locked'].astype(bool)
 
     # For textual fields like 'removal_reason', 'report_reasons', 'removed_by', 'mod_reason_by', convert them to strings
     # It's also important to handle missing or NaN values appropriately
     text_fields = ['removal_reason', 'report_reasons', 'removed_by', 'mod_reason_by']
     for field in text_fields:
-        post_df[field] = post_df[field].fillna('NA').astype(str)
+        redd_post[field] = redd_post[field].fillna('NA').astype(str)
 
-    return post_df
+    return redd_post
 
 
 def load_data_to_csv(data: pd.DataFrame, path: str):

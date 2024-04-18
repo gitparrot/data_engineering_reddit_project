@@ -77,7 +77,9 @@ x-airflow-common:
     - ./utils:/opt/airflow/utils
    # - ./airflow.cfg:/opt/airflow/airflow.cfg
     - ./requirements.txt:/opt/airflow/requirements.txt
-    - ~/.google/credentials/:/.google/credentials:ro
+    - ./google_creds:/.google/credentials:ro
+    - ./worldnews_project:/opt/airflow/worldnews_project
+    - ./dbt:/opt/airflow/dbt
 
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:

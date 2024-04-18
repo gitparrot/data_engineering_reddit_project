@@ -1,4 +1,4 @@
-from etls.reddit_etl import connect_reddit, extract_posts, transform_data, load_data_to_csv
+from etls.etl import connect_api, post_extraction, data_transform, load_data_to_csv
 from utils.constants import CLIENT_ID, SECRET, OUTPUT_PATH
 import pandas as pd
 import os
@@ -21,20 +21,20 @@ def create_dataset_if_not_exists(client, dataset_id):
         client.create_dataset(dataset)
         print(f"Dataset {dataset_id} created.")
 
-def reddit_pipeline(file_name: str, subreddit: str, time_filter='day', limit=None):
+def worldnews_pipeline(file_name: str, subreddit: str, time_filter='day', limit=None):
     # Connect to reddit instance
-    instance = connect_reddit(CLIENT_ID, SECRET, 'Umar Agent')
+    instance = connect_api(CLIENT_ID, SECRET, 'Umar Agent')
     
     # Extraction
-    posts = extract_posts(instance, subreddit, time_filter, limit)
+    posts = post_extraction(instance, subreddit, time_filter, limit)
     
     # Transformation
-    post_df = pd.DataFrame(posts)
-    post_df = transform_data(post_df)
+    post_dataframe = pd.DataFrame(posts)
+    post_dataframe = data_transform(post_dataframe)
     
     # Loading to csv
     file_path = f'{OUTPUT_PATH}/{file_name}.csv'
-    load_data_to_csv(post_df, file_path)
+    load_data_to_csv(post_dataframe, file_path)
     
     # # Upload to GCS
     # object_name = f'reddit_data/{file_name}.csv'  # Adjust path as needed
