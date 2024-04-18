@@ -81,7 +81,7 @@ Then:
 ```bash
 cd reddit-data-pipeline
 ```
-Place your GCP service account key JSON file in the google_creds/ directory AND NAME IT google_credentials.json (IT HAS TO BE NAMED google_credentials.json)
+Place your GCP service account key JSON file in the /data_engineering_reddit_project/google_creds/ directory AND NAME IT google_credentials.json (IT HAS TO BE NAMED google_credentials.json)
 
 Update the following variables in the terraform/variables.tf file:
 ```bash
