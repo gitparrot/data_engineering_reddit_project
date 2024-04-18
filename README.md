@@ -143,3 +143,11 @@ Bar chart for seeing the average number of posts and the scores.
 Time series graph for seeing the activity based on UTC time.
 
 ![Dashboard](./reddit_proj_dash.png "WorldNews Subreddit Dashboard")
+
+## Architecture
+
+![Architecture](./architecture.png "Pipeline Architecture")
+
+## Additional Comments
+
+The data captured and presented in the dashboard was accumulated by running the pipeline for multiple days. It is run hourly. Some hours the run may crash. I have observed that this happens when a post title has some sort of formatting that I wasn't able to narrow down. It would show up having a new line in the csv file while debugging. I only observed this issue a handful of times after multiple of days of running the pipeline. 
