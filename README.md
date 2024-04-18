@@ -10,6 +10,7 @@ Before running the project, make sure you have the following:
 
 - Google Cloud Platform (GCP) account with billing enabled
 - GCP project with the necessary APIs enabled (BigQuery, Cloud Storage, Compute Engine(IF YOU ARE RUNNING A VM))
+- IAM Roles for your Service Account can be set the same way it was done in the course: https://www.youtube.com/watch?v=Y2ux7gq3Z0o&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=12
 - GCP service account key JSON file
 - Docker and Docker Compose installed on your local machine
 - Terraform installed on your local machine
@@ -51,8 +52,8 @@ reddit-data-pipeline/
 │       └── dbt_project.yml
 ├── etls/
 │   └── etl.py
-├── google_creds/
-│   └── gitkeep #THIS IS WHERE YOU UPLOAD YOUR SERVICE ACCOUNT AND NAME IT google_credentials.json
+├── google_creds/ #THIS IS WHERE YOU UPLOAD YOUR SERVICE ACCOUNT AND NAME IT google_credentials.json
+│   └── gitkeep 
 ├── pipelines/
 │   └── pipeline.py
 ├── plugins/
@@ -75,9 +76,13 @@ reddit-data-pipeline/
 1. Clone the repository and navigate to the project directory:
 ```bash
 git clone https://github.com/gitparrot/data_engineering_reddit_project.git
+```
+Then:
+```bash
 cd reddit-data-pipeline
 ```
 Place your GCP service account key JSON file in the google_creds/ directory AND NAME IT google_credentials.json (IT HAS TO BE NAMED google_credentials.json)
+
 Update the following variables in the terraform/variables.tf file:
 ```bash
 project (line 10): Replace <ENTER YOUR PROJECT ID> with your actual GCP project ID.
