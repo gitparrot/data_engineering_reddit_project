@@ -32,7 +32,7 @@ Before running the project, make sure you have the following:
 The project has the following structure:
 
 ```plaintext
-reddit-data-pipeline/
+data_engineering_reddit_project/
 ├── config/
 │   └── config.conf
 ├── dags/
@@ -91,7 +91,7 @@ git clone https://github.com/gitparrot/data_engineering_reddit_project.git
 ```
 Then:
 ```bash
-cd reddit-data-pipeline
+cd data_engineering_reddit_project
 ```
 Place your GCP service account key JSON file in the /data_engineering_reddit_project/google_creds/ directory AND NAME IT google_credentials.json (IT HAS TO BE NAMED google_credentials.json)
 Like this:
